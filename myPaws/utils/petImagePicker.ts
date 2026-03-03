@@ -1,12 +1,12 @@
 import * as ImagePicker from "expo-image-picker";
+import { doc, updateDoc } from "firebase/firestore";
+import { db } from "../auth/firebase";
 
-const CLOUD_NAME = process.env.EXPO_PUBLIC_CLOUDINARY_CLOUD_NAME!;
-const UPLOAD_PRESET = process.env.EXPO_PUBLIC_CLOUDINARY_UPLOAD_PRESET!;
+const CLOUD_NAME = process.env.EXPO_PUBLIC_CLOUDINARY_CLOUD_NAME;
+const UPLOAD_PRESET = process.env.EXPO_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
 const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/upload`;
 
-/**
- * Pick an image from the device
- */
+// Pick image
 export async function pickImageFromLibrary(): Promise<string | null> {
   const result = await ImagePicker.launchImageLibraryAsync({
     mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -15,13 +15,17 @@ export async function pickImageFromLibrary(): Promise<string | null> {
   });
 
   if (result.canceled) return null;
-
   return result.assets[0].uri;
 }
 
-export async function uploadImageToCloudinary(
-  uri: string
+// Upload + update pet document
+export async function uploadPetImageToCloudinary(
+  uri: string,
+  clientId: string,
+  petId: string
 ): Promise<string | null> {
+  if (!uri) return null;
+
   try {
     const data = new FormData();
 
@@ -41,11 +45,20 @@ export async function uploadImageToCloudinary(
     const json = await res.json();
 
     if (!json.secure_url) {
-      console.log("Cloudinary error:", json);
+      console.log("Cloudinary upload failed:", json);
       return null;
     }
 
-    return json.secure_url as string;
+    const uploadedUrl = json.secure_url;
+
+    // Update pet document
+    const petRef = doc(db, "clients", clientId, "pets", petId);
+
+    await updateDoc(petRef, {
+      photoUrl: uploadedUrl,
+    });
+
+    return uploadedUrl;
   } catch (err) {
     console.log("Upload failed:", err);
     return null;

@@ -7,8 +7,14 @@ export type Pet = {
   name: string;
   species?: string;
   breed?: string;
-  age?: number;
-  photoURL?: string;
+  birthDate: string;
+  photoUrl?: string;
+  allergies?: string;
+  medication?: string;
+  gender?: string;
+  weight?: string;
+  illnesses?: string;
+  notes?: string;
 };
 
 export function useClientPets(clientId?: string) {

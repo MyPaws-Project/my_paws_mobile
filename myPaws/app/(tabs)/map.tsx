@@ -1,5 +1,5 @@
-import { StyleSheet, View } from "react-native";
-import MapView, { Marker } from "react-native-maps";
+import { StyleSheet, View, Image, Text } from "react-native";
+import MapView, { Marker, Callout } from "react-native-maps";
 import { fetchUsersWithCoords } from "../../utils/FetchPublicUsersWithCoords";
 import { useEffect, useState } from "react";
 import type { UserWithCoords } from "../../utils/FetchPublicUsersWithCoords";
@@ -25,17 +25,18 @@ export default function MapScreen() {
           longitude: -56.1645,
           latitudeDelta: 0.05,
           longitudeDelta: 0.05,
-        }}
-      >
+        }}>
+
         {users.map(user => (
-          <Marker key={user.id}
+          <Marker
+            key={user.id}
             coordinate={{
               latitude: user.coordinates.latitude,
               longitude: user.coordinates.longitude
             }}
-            title={user.clinicName}
-            description={user.clinicAddress}
-            />
+            onPress={()=> {return <div style={{zIndex: 10, background: 'black', width: '100%'}}>test</div>}}
+          >
+          </Marker>
         ))}
       </MapView>
     </View>

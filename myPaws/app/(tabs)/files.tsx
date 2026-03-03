@@ -4,259 +4,8 @@ import { Image, Pressable, Text, View, StyleSheet } from "react-native";
 import { downloadImage } from "../../utils/downoadPermission";
 import { useClientPets } from "../../hooks/useClientPets";
 import { useClient } from "../../context/ClientContext";
-import { pickImageFromLibrary, uploadImageToCloudinary } from "../../utils/petImagePicker";
-
-const PETS = [
-  {
-    id: 'rand_id1',
-    name: 'Simba',
-    animal: 'cat',
-    breed: 'Ginger Cat',
-    photoUrl: 'none',
-    gender: 'Male',
-    weight: '3.9Kg',
-    age: '1 year',
-    allergies: 'none',
-    illnesses: 'none',
-    ownerId: 'owner_Id',
-    medication: 'none',
-    notes: 'This cat is generally calm and well-behaved, showing curiosity in familiar environments but some hesitation around new people. It is an indoor-only cat with a normal appetite and regular litter box use. The cat prefers quiet spaces, enjoys resting in warm areas, and may become mildly anxious during veterinary visits. No known allergies or chronic conditions have been reported.',
-    records: [
-      {
-        name: 'simba-pata-izquierda-1',
-        adress: 'https://res.cloudinary.com/daw1qkmqz/image/upload/v1770581225/simba-pata-izquierda-1_jq5miv.jpg'
-      },
-      {
-        name: 'simba-pata-izquierda-2',
-        adress: 'https://res.cloudinary.com/daw1qkmqz/image/upload/v1770581238/simba-pata-izquierda-2_mpnihh.jpg'
-      },
-      {
-        name: 'simba-torax-1',
-        adress: 'https://res.cloudinary.com/daw1qkmqz/image/upload/v1770581246/simba-torax-1_dlalji.jpg'
-      },
-      {
-        name: 'simba-torax-2',
-        adress: 'https://res.cloudinary.com/daw1qkmqz/image/upload/v1770581255/simba-torax-2_k9h35h.jpg'
-      },
-    ],
-    vaccines: {
-      Rabies: {
-        doses: [
-          '20/12/2025',
-          '01/01/2026',
-          '15/01/2026'
-        ],
-        next_vaccine: `${new Date(new Date().setFullYear(new Date().getFullYear() + 1))}`
-      },
-      Triple_Feline: {
-        doses: [
-          '20/12/2025',
-          '01/01/2026',
-          '15/01/2026'
-        ],
-        next_vaccine: `${new Date(new Date().setFullYear(new Date().getFullYear() + 2))}`
-      }
-    },
-    consults: [
-      {
-        id: 'random_id_xd',
-        type: 'Consult',
-        attending_veterinarian: 'Dr. Example',
-        time: 'Wed Jan 28 2026 09:20:00',
-        notes: 'Concerns about redness around scar tissue, antibiotics ordered for two weeks. Closing nicely, vitals good otherwise.',
-        prescription: {
-          name: 'Amoxicillin',
-          amount: '1/2 tablet',
-          frequency: '12 hours',
-          time: '2 weeks'
-        },
-      },
-      {
-        id: 'consult_002',
-        type: 'Consult',
-        attending_veterinarian: 'Dr. Laura Smith',
-        time: 'Fri Jan 30 2026 14:45:00',
-        notes: 'Annual checkup performed. Weight stable, coat healthy. Mild tartar buildup observed; dental cleaning recommended within the year.',
-        prescription: {
-          name: 'None',
-          amount: '-',
-          frequency: '-',
-          time: '-'
-        },
-      },
-      {
-        id: 'consult_003',
-        type: 'Consult',
-        attending_veterinarian: 'Dr. Miguel Alvarez',
-        time: 'Mon Feb 02 2026 11:10:00',
-        notes: 'Presented with intermittent limping on right hind leg. No fracture detected on exam. Rest advised and anti-inflammatory prescribed.',
-        prescription: {
-          name: 'Carprofen',
-          amount: '1 tablet',
-          frequency: '24 hours',
-          time: '5 days'
-        },
-      },
-      {
-        id: 'consult_004',
-        type: 'Consult',
-        attending_veterinarian: 'Dr. Hannah Lee',
-        time: 'Thu Feb 05 2026 16:00:00',
-        notes: 'Vomiting reported over last 24 hours. Abdomen soft on palpation. Likely dietary indiscretion. Bland diet recommended.',
-        prescription: {
-          name: 'Metoclopramide',
-          amount: '5 ml',
-          frequency: '8 hours',
-          time: '3 days'
-        },
-      },
-      {
-        id: 'consult_005',
-        type: 'Consult',
-        attending_veterinarian: 'Dr. James Carter',
-        time: 'Sun Feb 08 2026 10:30:00',
-        notes: 'Skin itching and redness observed around ears and paws. Possible allergic reaction. Monitoring response to treatment.',
-        prescription: {
-          name: 'Prednisone',
-          amount: '1 tablet',
-          frequency: '24 hours',
-          time: '7 days'
-        },
-      },
-      {
-        id: 'consult_006',
-        type: 'Consult',
-        attending_veterinarian: 'Dr. Sofia Mendes',
-        time: 'Wed Feb 11 2026 13:15:00',
-        notes: 'Vaccinations updated. Mild lethargy expected for next 24 hours. Owner advised to monitor appetite and activity.',
-        prescription: {
-          name: 'None',
-          amount: '-',
-          frequency: '-',
-          time: '-'
-        },
-      },
-      {
-        id: 'consult_007',
-        type: 'Consult',
-        attending_veterinarian: 'Dr. Robert Nguyen',
-        time: 'Sat Feb 14 2026 09:50:00',
-        notes: 'Follow-up visit post dental procedure. Healing well, no signs of infection. Sutures intact.',
-        prescription: {
-          name: 'Meloxicam',
-          amount: '0.1 ml',
-          frequency: '24 hours',
-          time: '3 days'
-        },
-      },
-    ]
-  },
-  {
-    id: 'rand_id2',
-    name: 'Manuela',
-    breed: 'Maltese Poodle',
-    animal: 'dog',
-    photoUrl: 'none',
-    gender: 'Male',
-    weight: '3.9Kg',
-    age: '1 year',
-    allergies: 'Pollen',
-    illnesses: 'Atopic Dermatitis',
-    ownerId: 'owner_Id',
-    medication: 'none',
-    notes: '',
-    records: [
-      {
-        name: 'name1',
-        adress: 'https://act-webstatic.hoyoverse.com/upload/contentweb/2022/06/29/1346e716a5106af1799a0689dbb447d4_2694372439747645027.png'
-      },
-      {
-        name: 'name2',
-        adress: 'https://hoyo.global/wp-content/uploads/2024/08/emilie-avatar-profile-genshin-impact.webp'
-      },
-      {
-        name: 'name3',
-        adress: 'https://fastcdn.hoyoverse.com/content-v2/hk4e/161036/f22cf14c3c9f608d2cd4a2c3c414f81a_7856336448750181286.png'
-      },
-      {
-        name: 'name4',
-        adress: 'https://fastcdn.hoyoverse.com/content-v2/hk4e/156697/5f44d39593b1563221226dcce9884217_1259178755095507549.png'
-      },
-    ],
-    vaccines: {
-      Rabies: {
-        doses: [
-          '20/12/2025',
-          '01/01/2026',
-          '15/01/2026'
-        ],
-        next_vaccine: `${new Date(new Date().setFullYear(new Date().getFullYear() + 1))}`
-      },
-      Triple_Feline: {
-        doses: [
-          '22/12/2025',
-          '03/01/2026',
-          '17/01/2026'
-        ],
-        next_vaccine: `${new Date(new Date().setFullYear(new Date().getFullYear() + 2))}`
-      }
-    },
-    consults: [
-      {
-        id: 'random_id_xd',
-        type: 'Consult',
-        attending_veterinarian: 'Dr. Example',
-        time: 'Wed Jan 28 2026 09:20:00',
-        notes: 'Concerns about redness around scar tissue, antibiotics ordered for two weeks. Closing nicely, vitals good otherwise.',
-        prescription: {
-          name: 'Amoxicillin',
-          amount: '1/2 tablet',
-          frequency: '12 hours',
-          time: '2 weeks'
-        },
-      },
-      {
-        id: 'consult_002',
-        type: 'Consult',
-        attending_veterinarian: 'Dr. Laura Smith',
-        time: 'Fri Jan 30 2026 14:45:00',
-        notes: 'Annual checkup performed. Weight stable, coat healthy. Mild tartar buildup observed; dental cleaning recommended within the year.',
-        prescription: {
-          name: 'None',
-          amount: '-',
-          frequency: '-',
-          time: '-'
-        },
-      },
-      {
-        id: 'consult_006',
-        type: 'Consult',
-        attending_veterinarian: 'Dr. Sofia Mendes',
-        time: 'Wed Feb 11 2026 13:15:00',
-        notes: 'Vaccinations updated. Mild lethargy expected for next 24 hours. Owner advised to monitor appetite and activity.',
-        prescription: {
-          name: 'None',
-          amount: '-',
-          frequency: '-',
-          time: '-'
-        },
-      },
-      {
-        id: 'consult_007',
-        type: 'Consult',
-        attending_veterinarian: 'Dr. Robert Nguyen',
-        time: 'Sat Feb 14 2026 09:50:00',
-        notes: 'Follow-up visit post dental procedure. Healing well, no signs of infection. Sutures intact.',
-        prescription: {
-          name: 'Meloxicam',
-          amount: '0.1 ml',
-          frequency: '24 hours',
-          time: '3 days'
-        },
-      },
-    ]
-  }
-]
+import { pickImageFromLibrary, uploadPetImageToCloudinary } from "../../utils/petImagePicker";
+import { calculatePetAge } from "../../utils/calculatePetAge";
 
 const getTabs = (pet) => [
   { key: 'summary', label: 'Summary' },
@@ -271,27 +20,26 @@ export default function Files() {
   const [activeTab, setActiveTab] = useState('summary');
   const [onRecordOpen, setOnRecordOpen] = useState<string | null>(null)
   const [petImages, setPetImages] = useState<Record<string, string>>({});
-  const [uploadingPetId, setUploadingPetId] = useState<string | null>(null);
-  const { client } = useClient();
+  const { client, setClient } = useClient();
+  const { pets, loading } = useClientPets(client?.uid);
 
-  const handlePickImage = async (petId: string) => {
-    const localUri = await pickImageFromLibrary();
-    if (!localUri) return;
+  const handlePickImage = async (clientId?: string, petId?: string) => {
+    if (!clientId || !petId) return;
 
-    setUploadingPetId(petId);
-    const url = await uploadImageToCloudinary(localUri);
+    const uri = await pickImageFromLibrary();
+    if (!uri) return;
 
-    if (url) {
-      setPetImages(prev => ({
-        ...prev,
-        [petId]: url,
-      }));
-    }
+    const uploadedUrl = await uploadPetImageToCloudinary(uri, clientId, petId);
+    if (!uploadedUrl) return;
 
-    setUploadingPetId(null);
+    // Update local state so UI refreshes immediately
+    setPetImages(prev => ({
+      ...prev,
+      [petId]: uploadedUrl,
+    }));
   };
 
-
+  console.log("PETS:", pets);
   return (
     <>
       {/* IMAGE VIEW */}
@@ -311,8 +59,9 @@ export default function Files() {
           </View>
         </View>)}
       <View style={{ backgroundColor: 'white', width: '100%', height: '100%', paddingLeft: 10, paddingRight: 10, paddingBottom: 10 }}>
-        {PETS.map(pet => {
+        {pets.map(pet => {
           const isOpen = openPetId === pet.id;
+          const localImage = petImages[pet.id]; //for image instant reload
           return (
             <View key={pet.id} style={{ display: 'flex', flexDirection: 'column', marginTop: 10 }}>
               <Pressable onPress={() => setOpenPetId(isOpen ? null : pet.id)}>
@@ -356,37 +105,47 @@ export default function Files() {
                       {activeTab === 'summary' && (
                         <View style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
                           <View style={{ width: '100%', display: 'flex', flexDirection: 'row' }}>
-                            <Pressable onPress={() => { handlePickImage(pet.id) }}>
+                            <Pressable onPress={() => { handlePickImage(client?.uid, pet.id) }}>
                               <Image source={require('../../assets/images/dots.png')}
                                 style={{ width: 30, height: 12, position: "absolute", top: 128, left: 110, zIndex: 1, backgroundColor: 'white', borderRadius: 3 }} />
                               <Image
                                 source={
-                                  petImages[pet.id]
-                                    ? { uri: petImages[pet.id] }
-                                    : pet.animal === 'cat'
-                                      ? require('../../assets/images/placeholder-cat.png')
-                                      : require('../../assets/images/placeholder-dog.png')
+                                  localImage
+                                    ? { uri: localImage }
+                                    : pet.photoUrl
+                                      ? { uri: pet.photoUrl }
+                                      : pet.species?.toLowerCase() === "gato"
+                                        ? require("../../assets/images/placeholder-cat.png")
+                                        : pet.species?.toLowerCase() === "perro"
+                                          ? require("../../assets/images/placeholder-dog.png")
+                                          : require("../../assets/images/placeholder-empty.png")
                                 }
                                 style={{ width: 150, height: 150, borderRadius: 5, boxShadow: '1px 1px 8px gray' }}
                               />
                             </Pressable>
                             <View style={{ marginLeft: 15, display: 'flex', justifyContent: 'space-around' }}>
-                              <View><Text style={styles.title}>{pet.breed}</Text></View>
+                              <View><Text style={styles.title}>{pet.species}{' •  '}{pet.breed}</Text></View>
                               <View style={styles.summary_list_container}>
-                                <Image source={require('../../assets/images/male.png')} style={{ width: 15, height: 15 }} />
+                                <Image
+                                  source={
+                                    pet.gender?.toLowerCase() === "female"
+                                      ? require("../../assets/images/female.png")
+                                      : require("../../assets/images/male.png")
+                                  } style={{ width: 15, height: 15 }}
+                                />
                                 <Text style={{ fontSize: 16, margin: 5 }}>{' •  '}{pet.gender}</Text></View>
                               <View style={styles.summary_list_container}>
                                 <Image source={require('../../assets/images/weight.png')} style={{ width: 15, height: 15 }} />
-                                <Text style={{ fontSize: 16, margin: 5 }}>{' •  '}{pet.weight}</Text></View>
+                                <Text style={{ fontSize: 16, margin: 5 }}>{' •  '}{pet.weight} Kg</Text></View>
                               <View style={styles.summary_list_container}>
                                 <Image source={require('../../assets/images/cake.png')} style={{ width: 15, height: 15 }} />
-                                <Text style={{ fontSize: 16, margin: 5 }}>{' •  '}{pet.age}</Text></View>
+                                <Text style={{ fontSize: 16, margin: 5 }}>{' •  '}{calculatePetAge(pet.birthDate)}</Text></View>
                             </View>
                           </View>
                           <View style={{ margin: 8, width: '95%', height: 1, backgroundColor: 'gray' }}></View>
                           <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                             <View style={{ display: 'flex', flexDirection: 'column', gap: 10, marginRight: 20 }}>
-                              <View style={{ borderRadius: 5, backgroundColor: '#EE2623', padding: 2, display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 20, justifyContent: 'flex-start', width: '100%', boxShadow: '1px 1px 8px gray' }}>
+                              <View style={{ borderRadius: 5, backgroundColor: '#EE2623', minWidth: '160', padding: 2, display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 20, justifyContent: 'flex-start', width: '100%', boxShadow: '1px 1px 8px gray' }}>
                                 <Image source={require('../../assets/images/warning.png')} style={{ width: 22, height: 22, marginLeft: 5 }} />
                                 <Text style={{ color: 'white', fontSize: 15, }}>{pet.allergies === 'none' ? 'No Allergies' : pet.allergies}</Text></View>
                               <View style={{ borderRadius: 5, backgroundColor: '#F19900', padding: 2, display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 20, justifyContent: 'flex-start', width: '100%', marginRight: 15, boxShadow: '1px 1px 8px gray' }}>

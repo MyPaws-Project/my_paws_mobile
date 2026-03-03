@@ -9,6 +9,7 @@ export type UserWithCoords = {
     longitude: number;
   };
   clinicAddress: string;
+  logoURL: string;
 };
 
 export async function fetchUsersWithCoords(): Promise<UserWithCoords[]> {

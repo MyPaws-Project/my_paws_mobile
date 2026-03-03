@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { View, Text, Pressable, FlatList, StyleSheet } from "react-native";
-import { Calendar } from 'react-native-big-calendar'
+import { Calendar } from 'react-native-big-calendar';
 import IconButton from "../components/IconButton";
 import { generateWeekSlots } from "../../utils/generateEvents";
 import { Ionicons } from "@expo/vector-icons";
@@ -120,7 +120,6 @@ export default function MyCalendar() {
         setCurrentDate(d);
     };
 
-
     const goPrevMonth = () => {
         const d = new Date(currentDate);
         d.setMonth(d.getMonth() - 1);
@@ -153,16 +152,19 @@ export default function MyCalendar() {
                         data={DATA}
                         renderItem={({ item }) =>
                             <Pressable style={item.disabled ? styles.item_container_disabled : styles.item_container}
-                                onPress={() => { if (!item.disabled) {console.log(item.id, item.time); setTimeOpen(item.time)} }}>
-                                <Text style={styles.item_text}>{item.time}
+                                onPress={() => { if (!item.disabled) { console.log(item.id, item.time); setTimeOpen(item.time) } }}>
+                                <Text style={styles.item_text}>
+                                    {item.time}
                                 </Text>
                             </Pressable>}>
                     </FlatList>
                 </View>
             )}
-            {timeOpen !== 'null' && (<View style={{ width: '95%',
+            {timeOpen !== 'null' && (<View style={{
+                width: '95%',
                 height: '50%', display: 'flex', position: 'absolute',
-                zIndex: 2, backgroundColor: 'white', top: 100, boxShadow: '1px 1px 8px gray', alignSelf: 'center' }}></View>)}
+                zIndex: 2, backgroundColor: 'white', top: 100, boxShadow: '1px 1px 8px gray', alignSelf: 'center'
+            }}></View>)}
             <View style={styles.nav_buttons}>
                 <IconButton text="Previous Month" icon="chevron-back" onPress={goPrevMonth} direction={"left"} />
                 <IconButton text="Next Month" icon="chevron-forward" onPress={goNextMonth} direction={"right"} />
