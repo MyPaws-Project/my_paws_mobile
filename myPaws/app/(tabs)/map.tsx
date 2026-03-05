@@ -34,7 +34,8 @@ export default function MapScreen() {
               latitude: user.coordinates.latitude,
               longitude: user.coordinates.longitude
             }}
-            onPress={()=> {return <div style={{zIndex: 10, background: 'black', width: '100%'}}>test</div>}}
+            title={user.clinicName}
+            description={user.clinicAddress}
           >
           </Marker>
         ))}

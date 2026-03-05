@@ -14,11 +14,10 @@ export default function TabsLayout() {
   const { showFirstTab, showSecondTab, handleFirstTab, handleSecondTab } = useChatTabs()
 
   useEffect(() => {
-    NavigationBar.setButtonStyleAsync("light"); //  white sysyem icons
+    NavigationBar.setButtonStyleAsync("light"); //  white sysyem icons while on tabs
 
     return () => {
-      // reset when leaving (tabs)
-      NavigationBar.setButtonStyleAsync("dark");
+      NavigationBar.setButtonStyleAsync("dark"); // reset when leaving tabs
     };
   }, []);
 
@@ -39,7 +38,7 @@ export default function TabsLayout() {
 
           <View style={{ flexDirection: "row", gap: 16, paddingRight: 10 }}>
             <Pressable onPress={() => { handleChat(); if (showOptions) { handleOptions() } }}>
-              <Ionicons name={showChat ? "chatbox" : "chatbox-outline"} size={29} color="#fff" />
+              <Ionicons name={"reload"} size={29} color="#fff" />
             </Pressable>
 
             <Pressable onPress={() => { handleOptions(); if (showChat) { handleChat() } }}>

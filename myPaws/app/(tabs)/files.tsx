@@ -6,10 +6,11 @@ import { useClientPets } from "../../hooks/useClientPets";
 import { useClient } from "../../context/ClientContext";
 import { pickImageFromLibrary, uploadPetImageToCloudinary } from "../../utils/petImagePicker";
 import { calculatePetAge } from "../../utils/calculatePetAge";
+import type { Pet, MedicalHistory, Photos } from "../../hooks/useClientPets";
 
-const getTabs = (pet) => [
+const getTabs = (pet: Pet) => [
   { key: 'summary', label: 'Summary' },
-  { key: 'consults', label: 'Consults', count: pet.consults?.length ?? 0 },
+  { key: 'consults', label: 'Consults', count: pet.medicalHistory?.length ?? 0 },
   { key: 'vaccines', label: 'Vaccines' },
   { key: 'records', label: 'Records' },
   { key: 'notes', label: 'Notes' },
@@ -18,9 +19,9 @@ const getTabs = (pet) => [
 export default function Files() {
   const [openPetId, setOpenPetId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('summary');
-  const [onRecordOpen, setOnRecordOpen] = useState<string | null>(null)
+  const [photoOpen, setPhotoOpen] = useState<Photos | null>(null)
   const [petImages, setPetImages] = useState<Record<string, string>>({});
-  const { client, setClient } = useClient();
+  const { client } = useClient();
   const { pets, loading } = useClientPets(client?.uid);
 
   const handlePickImage = async (clientId?: string, petId?: string) => {
@@ -39,22 +40,23 @@ export default function Files() {
     }));
   };
 
-  console.log("PETS:", pets);
+  //console.log("PETS:", pets);
   return (
     <>
       {/* IMAGE VIEW */}
 
-      {onRecordOpen && (
+      {photoOpen && (
         <View style={{ backgroundColor: 'black', width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <View style={{ alignSelf: 'flex-end' }}>
-            <Pressable onPress={() => setOnRecordOpen(null)}>
-              <Ionicons name="close" color={'#fff'} size={30} />
-            </Pressable>
-          </View>
-          <Image source={{ uri: onRecordOpen }} style={{ width: '100%', height: '90%' }} resizeMode="contain" />
-          <View style={{ alignSelf: 'flex-end', height: 40 }}>
-            <Pressable onPress={() => { console.log('button press'); downloadImage(onRecordOpen) }}>
-              <Image source={require('../../assets/images/download.png')} style={{ height: 25, width: 25 }} />
+          <Pressable style={{ display: 'flex', justifyContent: 'space-between', flexDirection: 'row', width: '100%', padding: 5 }}
+            onPress={() => setPhotoOpen(null)}>
+            <Text style={{ ...styles.title, color: 'white' }}>{photoOpen.title.toUpperCase()}</Text>
+            <Ionicons name="close" color={'#fff'} size={30} />
+          </Pressable>
+          <Image source={{ uri: photoOpen.url }} style={{ width: '100%', height: '90%' }} resizeMode="contain" />
+          <View style={{ alignSelf: 'flex-end', height: 40, width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+            <Text style={{ ...styles.title, color: 'white', marginLeft: 5}}>{photoOpen.description}</Text>
+            <Pressable onPress={() => { console.log('button press'); downloadImage(photoOpen.url) }}>
+              <Image source={require('../../assets/images/download.png')} style={{ height: 25, width: 25, marginRight: 5 }} />
             </Pressable>
           </View>
         </View>)}
@@ -78,7 +80,7 @@ export default function Files() {
               </Pressable>
               {isOpen && (
                 <View style={{ height: '82%', backgroundColor: '#C9E7AE', padding: 10, borderBottomLeftRadius: 5, borderBottomRightRadius: 5, display: "flex", justifyContent: 'center', alignItems: 'center' }}>
-                  <View style={{ width: '100%', height: '100%', borderRadius: 5, display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+                  <View style={{ width: '100%', height: '100%', borderRadius: 8, display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
                     <View style={{ height: '4%', width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
                       {getTabs(pet).map(tab => (
                         <Pressable key={tab.key} onPress={() => setActiveTab(tab.key)}>
@@ -120,7 +122,7 @@ export default function Files() {
                                           ? require("../../assets/images/placeholder-dog.png")
                                           : require("../../assets/images/placeholder-empty.png")
                                 }
-                                style={{ width: 150, height: 150, borderRadius: 5, boxShadow: '1px 1px 8px gray' }}
+                                style={{ width: 150, height: 150, borderRadius: 8, boxShadow: '1px 1px 8px gray' }}
                               />
                             </Pressable>
                             <View style={{ marginLeft: 15, display: 'flex', justifyContent: 'space-around' }}>
@@ -147,10 +149,10 @@ export default function Files() {
                             <View style={{ display: 'flex', flexDirection: 'column', gap: 10, marginRight: 20 }}>
                               <View style={{ borderRadius: 5, backgroundColor: '#EE2623', minWidth: '160', padding: 2, display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 20, justifyContent: 'flex-start', width: '100%', boxShadow: '1px 1px 8px gray' }}>
                                 <Image source={require('../../assets/images/warning.png')} style={{ width: 22, height: 22, marginLeft: 5 }} />
-                                <Text style={{ color: 'white', fontSize: 15, }}>{pet.allergies === 'none' ? 'No Allergies' : pet.allergies}</Text></View>
+                                <Text style={{ color: 'white', fontSize: 16, }}>{pet.allergies === 'none' ? 'No Allergies' : pet.allergies}</Text></View>
                               <View style={{ borderRadius: 5, backgroundColor: '#F19900', padding: 2, display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 20, justifyContent: 'flex-start', width: '100%', marginRight: 15, boxShadow: '1px 1px 8px gray' }}>
                                 <Image source={require('../../assets/images/warning.png')} style={{ width: 22, height: 22, marginLeft: 5 }} />
-                                <Text style={{ color: 'white', fontSize: 15 }}>{pet.illnesses === 'none' ? 'No illnesses' : pet.illnesses}</Text></View>
+                                <Text style={{ color: 'white', fontSize: 16 }}>{pet.illnesses === 'none' ? 'No illnesses' : pet.illnesses}</Text></View>
                             </View>
                             <View style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                               <Text style={{ fontSize: 16, margin: 5 }}>{client?.fullName}</Text>
@@ -178,7 +180,7 @@ export default function Files() {
                                   <Image source={require('../../assets/images/tick.png')} style={{ width: 50, height: 50 }} />
                                   <Text>
                                     next in {Math.ceil(
-                                      (new Date(vaccine.next_vaccine).getTime() - Date.now()) /
+                                      (new Date().getTime() - Date.now()) /
                                       (1000 * 60 * 60 * 24)
                                     )} days
                                   </Text>
@@ -193,14 +195,14 @@ export default function Files() {
 
                       {activeTab === 'consults' && (
                         <View style={{ width: '100%', display: 'flex', flexDirection: 'column', padding: 5 }}>
-                          {pet.consults.map(consult =>
-                            <View key={consult.id} style={{ gap: 5, margin: 5, display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                          {pet.medicalHistory?.map((history, index) =>
+                            <View key={index} style={{ gap: 5, margin: 5, display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                               <Image style={{ width: 36, height: 30 }} source={require('../../assets/images/heartbeat.png')} />
                               <View>
-                                <Text style={{ fontSize: 18 }}>{consult.type} - {consult.attending_veterinarian}</Text>
-                                <Text style={{ fontSize: 12 }}>{consult.time}</Text>
+                                <Text style={{ fontSize: 18 }}>{history.type} - {history.attending_veterinarian}</Text>
+                                <Text style={{ fontSize: 12 }}>{history.time_date}</Text>
                               </View>
-                              <Pressable onPress={() => console.log('info press', consult.id)}>
+                              <Pressable onPress={() => console.log('info press:', index)}>
                                 <Ionicons name="information-circle-outline" size={30}></Ionicons>
                               </Pressable>
                             </View>)}
@@ -235,11 +237,11 @@ export default function Files() {
 
                       {activeTab === 'records' && (
                         <View style={{ width: '100%', display: 'flex', flexDirection: 'column', padding: 5 }}>
-                          {pet.records?.map((record) => (
-                            <Pressable key={record.name} onPress={() => setOnRecordOpen(record.adress)}>
+                          {pet.photos?.map((photo) => (
+                            <Pressable key={photo.title} onPress={() => setPhotoOpen(photo)}>
                               <View style={{ display: 'flex', flexDirection: 'row', gap: 15, margin: 10, alignItems: 'center' }}>
                                 <Image source={require('../../assets/images/attachment.png')} style={{ width: 16, height: 30 }} />
-                                <Text style={{ fontSize: 18 }}>{record.name}</Text>
+                                <Text style={{ fontSize: 18 }}>{photo.title}</Text>
                               </View>
                             </Pressable>
                           ))}
@@ -273,7 +275,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    borderRadius: 5,
+    borderRadius: 8,
   },
   pet_header_open: {
     width: '100%',
@@ -283,15 +285,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    borderRadius: 5,
+    borderRadius: 8,
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
   },
   activeTab: {
     backgroundColor: 'white',
     borderRadius: 0,
-    borderTopRightRadius: 5,
-    borderTopLeftRadius: 5,
+    borderTopRightRadius: 6,
+    borderTopLeftRadius: 6,
     padding: 2,
     fontSize: 14,
     height: 30
@@ -299,8 +301,8 @@ const styles = StyleSheet.create({
   unactiveTab: {
     backgroundColor: '#EFEFEF',
     borderRadius: 0,
-    borderTopRightRadius: 5,
-    borderTopLeftRadius: 5,
+    borderTopRightRadius: 6,
+    borderTopLeftRadius: 6,
     padding: 2,
     fontSize: 14,
   },
