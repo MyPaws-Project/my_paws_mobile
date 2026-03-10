@@ -68,7 +68,7 @@ export function useClientPets(clientId?: string) {
             const petId = doc.id;
             const petData = doc.data() as Omit<Pet, "id">;
 
-            // 🔥 Photos subcollection
+            // Photos subcollection
             const photosRef = collection(
               db,
               "clients",
@@ -84,7 +84,7 @@ export function useClientPets(clientId?: string) {
               ...p.data(),
             }));
 
-            // 🔥 Medical History subcollection
+            // Medical History subcollection
             const medicalRef = collection(
               db,
               "clients",

@@ -20,6 +20,7 @@ export default function Files() {
   const [openPetId, setOpenPetId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('summary');
   const [photoOpen, setPhotoOpen] = useState<Photos | null>(null)
+  const [historyOpen, setHistoryOpen] = useState<MedicalHistory | null>(null)
   const [petImages, setPetImages] = useState<Record<string, string>>({});
   const { client } = useClient();
   const { pets, loading } = useClientPets(client?.uid);
@@ -54,7 +55,7 @@ export default function Files() {
           </Pressable>
           <Image source={{ uri: photoOpen.url }} style={{ width: '100%', height: '90%' }} resizeMode="contain" />
           <View style={{ alignSelf: 'flex-end', height: 40, width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-            <Text style={{ ...styles.title, color: 'white', marginLeft: 5}}>{photoOpen.description}</Text>
+            <Text style={{ ...styles.title, color: 'white', marginLeft: 5 }}>{photoOpen.description}</Text>
             <Pressable onPress={() => { console.log('button press'); downloadImage(photoOpen.url) }}>
               <Image source={require('../../assets/images/download.png')} style={{ height: 25, width: 25, marginRight: 5 }} />
             </Pressable>
@@ -194,18 +195,52 @@ export default function Files() {
                       {/* CONSUlTS TAB */}
 
                       {activeTab === 'consults' && (
-                        <View style={{ width: '100%', display: 'flex', flexDirection: 'column', padding: 5 }}>
+                        <View style={{ width: '100%', display: 'flex', alignItems: 'center', flexDirection: 'column', padding: 5 }}>
+                          {historyOpen !== null && <View style={{ position: 'absolute', padding: 8, width: '100%', height: 'auto', backgroundColor: 'white', borderRadius: 8, zIndex: 2, boxShadow: '2px 2px 10px gray' }}>
+                            <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                              <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                                <Image style={{ width: 36, height: 30 }} source={require('../../assets/images/heartbeat.png')} />
+                                <View>
+                                  <Text style={{ ...styles.title, fontSize: 20 }}>{historyOpen.type.toUpperCase()}</Text>
+                                  <Text>{historyOpen.time_date}</Text>
+                                </View>
+                              </View>
+                              <Pressable onPress={() => { console.log('xd'); setHistoryOpen(null) }}>
+                                <Ionicons name="close" color={'#000'} size={30} />
+                              </Pressable>
+                            </View>
+                            <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-around' }}>
+                              <View style={{ borderWidth: 2, width: '100%', borderColor: '#5C9E3F', backgroundColor: '#d9f1c3bd', marginTop: 10, padding: 5, borderRadius: 10 }}>
+                                <Text style={{ fontWeight: '600', fontSize: 16 }}>REASON</Text>
+                                <Text style={{ fontSize: 16, marginLeft: 15 }}>{historyOpen.reason}.</Text>
+                              </View>
+                              <View style={{ borderWidth: 2, width: '100%', borderColor: '#5C9E3F', backgroundColor: '#d9f1c3bd', marginTop: 10, padding: 5, borderRadius: 10 }}>
+                                <Text style={{ fontWeight: '600', fontSize: 16 }}>TREATMENT</Text>
+                                <Text style={{ fontSize: 16, marginLeft: 15 }}>{historyOpen.treatment}.</Text>
+                              </View>
+                              <View style={{ borderWidth: 2, width: '100%', borderColor: '#5C9E3F', backgroundColor: '#d9f1c3bd', marginTop: 10, padding: 5, borderRadius: 10 }}>
+                                <Text style={{ fontWeight: '600', fontSize: 16 }}>NOTES</Text>
+                                <Text style={{ fontSize: 16, marginLeft: 15 }}>{historyOpen.notes}.</Text>
+                              </View>
+                              <Text style={{ padding: 5, marginTop: 5, fontSize: 16, alignSelf: 'flex-end' }}>
+                                Vet. {historyOpen.attending_veterinarian}
+                              </Text>
+                            </View>
+                          </View>
+                          }
                           {pet.medicalHistory?.map((history, index) =>
-                            <View key={index} style={{ gap: 5, margin: 5, display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                            <Pressable key={index} style={{ gap: 5, margin: 5, display: 'flex', flexDirection: 'row', alignItems: 'center', alignSelf: "flex-start" }}
+                              onPress={() => { console.log('info press:', index); setHistoryOpen(history) }}>
                               <Image style={{ width: 36, height: 30 }} source={require('../../assets/images/heartbeat.png')} />
                               <View>
-                                <Text style={{ fontSize: 18 }}>{history.type} - {history.attending_veterinarian}</Text>
+                                <Text style={{ fontSize: 18 }}>{history.type.charAt(0).toUpperCase() + history.type.slice(1)} - {history.attending_veterinarian}</Text>
                                 <Text style={{ fontSize: 12 }}>{history.time_date}</Text>
                               </View>
-                              <Pressable onPress={() => console.log('info press:', index)}>
-                                <Ionicons name="information-circle-outline" size={30}></Ionicons>
-                              </Pressable>
-                            </View>)}
+
+                              <Ionicons name="information-circle-outline" size={30}></Ionicons>
+                            </Pressable>
+
+                          )}
                         </View>
                       )}
 
@@ -275,7 +310,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    borderRadius: 8,
+    borderRadius: 15
   },
   pet_header_open: {
     width: '100%',
@@ -285,7 +320,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    borderRadius: 8,
+    borderRadius: 15,
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
   },
