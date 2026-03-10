@@ -170,24 +170,42 @@ export default function Files() {
                             <Ionicons name="chevron-down" color={'#FFF'} size={25} style={{ marginRight: 10 }} />
                           </View>
                           <View style={{ margin: 8, width: '95%', height: 1, backgroundColor: 'gray' }}></View>
-                          <View style={{ display: "flex", justifyContent: 'center', alignItems: 'center', width: '100%', margin: 5, flexDirection: 'column' }}>
-                            <Text style={styles.title}>Next Vaccines</Text>
-                            <View style={{ width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}>
-                              {Object.entries(pet.vaccines ?? {}).map(([vaccineName, vaccine]) => (
-                                <View key={vaccineName} style={{ display: 'flex', alignItems: 'center' }}>
-                                  <Text style={{ fontSize: 16, margin: 5 }}>
-                                    {vaccineName}
-                                  </Text>
-                                  <Image source={require('../../assets/images/tick.png')} style={{ width: 50, height: 50 }} />
-                                  <Text>
-                                    next in {Math.ceil(
-                                      (new Date().getTime() - Date.now()) /
-                                      (1000 * 60 * 60 * 24)
-                                    )} days
-                                  </Text>
+                          <View
+                            style={{
+                              width: '100%',
+                              flexDirection: 'row',
+                              justifyContent: 'space-around',
+                              flexWrap: 'wrap',
+                            }}
+                          >
+                            {(pet.vaccines ?? []).map((vaccine) => {
+                              // Get the next dose (first date in the future)
+                              const today = new Date();
+                              const nextDose = vaccine.doses
+                                .map(d => new Date(d))
+                                .filter(d => d >= today)
+                                .sort((a, b) => a.getTime() - b.getTime())[0];
+
+                              // Calculate days until next dose
+                              const daysUntilNext = nextDose
+                                ? Math.ceil((nextDose.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
+                                : null;
+
+                              return (
+                                <View key={vaccine.key} style={{ alignItems: 'center', margin: 8 }}>
+                                  <Text style={{ fontSize: 16, marginBottom: 4 }}>{vaccine.name}</Text>
+                                  <Image
+                                    source={require('../../assets/images/tick.png')}
+                                    style={{ width: 50, height: 50, marginBottom: 4 }}
+                                  />
+                                  {daysUntilNext !== null ? (
+                                    <Text>Next in {daysUntilNext} {daysUntilNext === 1 ? 'day' : 'days'}</Text>
+                                  ) : (
+                                    <Text>All doses completed</Text>
+                                  )}
                                 </View>
-                              ))}
-                            </View>
+                              );
+                            })}
                           </View>
                         </View>
                       )}
@@ -247,18 +265,30 @@ export default function Files() {
                       {/* VACCINES TAB */}
 
                       {activeTab === 'vaccines' && (
-                        <View style={{ padding: 5, marginTop: 10, width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around' }}>
-                          {Object.entries(pet.vaccines ?? {}).map(([vaccineName, vaccine]) => (
-                            <View key={vaccineName} style={{ marginBottom: 20, display: 'flex', gap: 20, justifyContent: 'center', alignItems: 'center' }}>
-                              <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                                <Image source={require('../../assets/images/syringe.png')} style={{ width: 40, height: 40 }} />
-                                <Text style={{ fontSize: 18, fontWeight: '600' }}>
-                                  {vaccineName}
-                                </Text>
+                        <View style={{ padding: 10, marginTop: 10, width: '100%' }}>
+                          {(pet.vaccines ?? []).map((vaccine) => (
+                            <View
+                              key={vaccine.key}
+                              style={{
+                                backgroundColor: '#F5F5F5',
+                                borderRadius: 12,
+                                padding: 10,
+                                marginBottom: 12,
+                              }}
+                            >
+                              {/* Vaccine header */}
+                              <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
+                                <Image
+                                  source={require('../../assets/images/syringe.png')}
+                                  style={{ width: 30, height: 30, marginRight: 8 }}
+                                />
+                                <Text style={{ fontSize: 16, fontWeight: '600' }}>{vaccine.name}</Text>
                               </View>
+
+                              {/* Doses */}
                               <View>
-                                {(vaccine.doses ?? []).map((dose) => (
-                                  <Text key={dose} style={{ margin: 8 }}>
+                                {vaccine.doses.map((dose, idx) => (
+                                  <Text key={idx} style={{ fontSize: 14, marginVertical: 2 }}>
                                     • {dose}
                                   </Text>
                                 ))}

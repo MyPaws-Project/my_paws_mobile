@@ -7,6 +7,7 @@ import useOptions from "../../hooks/useOptions"
 import useChat from "../../hooks/useChat";
 import useChatTabs from "../../hooks/useChatTabs";
 import { handleLogout } from "../../auth/authService";
+import { triggerRefresh } from "../../hooks/useRefresh";
 
 export default function TabsLayout() {
   const { showOptions, handleOptions } = useOptions()
@@ -37,8 +38,8 @@ export default function TabsLayout() {
         headerRight: () => (
 
           <View style={{ flexDirection: "row", gap: 16, paddingRight: 10 }}>
-            <Pressable onPress={() => { handleChat(); if (showOptions) { handleOptions() } }}>
-              <Ionicons name={"reload"} size={29} color="#fff" />
+            <Pressable onPress={triggerRefresh}>
+              <Ionicons name="reload" size={29} color="#fff" />
             </Pressable>
 
             <Pressable onPress={() => { handleOptions(); if (showChat) { handleChat() } }}>
