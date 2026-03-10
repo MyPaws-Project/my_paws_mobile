@@ -23,7 +23,7 @@ export default function Files() {
   const [historyOpen, setHistoryOpen] = useState<MedicalHistory | null>(null)
   const [petImages, setPetImages] = useState<Record<string, string>>({});
   const { client } = useClient();
-  const { pets, loading } = useClientPets(client?.uid);
+  const { pets } = useClientPets(client?.uid);
 
   const handlePickImage = async (clientId?: string, petId?: string) => {
     if (!clientId || !petId) return;

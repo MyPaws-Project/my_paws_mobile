@@ -12,15 +12,14 @@ export default function Home() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
 
-  function getPetName(petId: string) {
+  const getPetName = (petId: string) => {
     if (!pets) return "Loading pet...";
     const pet = pets.find((p) => p.id === petId);
     return pet ? pet.name : "Unknown pet";
-  }
+  };
 
   const loadAppointments = async () => {
     if (!client) return;
-
     const data = await getAppointments(client.uid);
     setAppointments(data);
     setLoading(false);
@@ -54,27 +53,17 @@ export default function Home() {
       <FlatList
         data={upcomingAppointments}
         keyExtractor={(item) => item.id}
-        ListEmptyComponent={
-          <Text style={styles.empty}>No appointments scheduled</Text>
-        }
-        renderItem={({ item }) => {
-          const date = new Date(item.startTime.seconds * 1000);
-
-          return (
-            <View style={styles.card}>
-              <Text style={styles.petName}>
-                🐾 {getPetName(item.petId)}
-              </Text>
-
-              <Text style={styles.date}>
-                {date.toLocaleDateString()}{" "}
-                {date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-              </Text>
-
-              <Text style={styles.reason}>{item.reason}</Text>
-            </View>
-          );
-        }}
+        ListEmptyComponent={<Text style={styles.empty}>No appointments scheduled</Text>}
+        renderItem={({ item }) => (
+          <View style={styles.card}>
+            <Text style={styles.petName}>🐾 {getPetName(item.petId)}</Text>
+            <Text style={styles.date}>
+              {new Date(item.startTime.seconds * 1000).toLocaleDateString()}{" "}
+              {new Date(item.startTime.seconds * 1000).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+            </Text>
+            <Text style={styles.reason}>{item.reason}</Text>
+          </View>
+        )}
       />
     </View>
   );

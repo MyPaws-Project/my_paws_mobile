@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#d9f1c3',
     padding: 4,
     paddingLeft: 15,
-    borderRadius: 4,
+    borderRadius: 10,
     borderWidth: 1,
     borderColor: '#5C9E3F',
     boxShadow: '1px 1px 2px gray'
@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#d9f1c3',
     padding: 4,
     paddingLeft: 15,
-    borderRadius: 4,
+    borderRadius: 10,
     borderWidth: 1,
     borderColor: '#5C9E3F',
     boxShadow: '1px 1px 2px gray',
@@ -239,7 +239,7 @@ const styles = StyleSheet.create({
   image: {
     width: '100%',
     height: 150,
-    borderRadius: 5,
+    borderRadius: 10,
     boxShadow: '1px 1px 8px gray'
   },
   loader: {
@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     height: '89%',
     width: '96%',
-    borderRadius: 4,
+    borderRadius: 10,
     display: 'flex',
     justifyContent: 'space-around',
     flexDirection: 'column',
@@ -272,13 +272,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#5C9E3F',
     boxShadow: '1px 1px 2px gray',
-    borderRadius: 4
+    borderRadius: 10
   },
   header: {
     backgroundColor: '#5C9E3F',
     height: '8%',
     width: '100%',
-    borderRadius: 4,
+    borderRadius: 10,
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
     display: 'flex',
@@ -290,13 +290,13 @@ const styles = StyleSheet.create({
     width: '95%',
     height: '100%',
     backgroundColor: '#C9E7AE',
-    borderRadius: 4,
+    borderRadius: 10,
     display: 'flex',
     alignItems: 'center'
   },
   screen: {
     backgroundColor: 'white',
-    borderRadius: 4,
+    borderRadius: 10,
     height: '97%',
     width: '100%',
     display: 'flex',
@@ -311,7 +311,7 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: "#7ED957",
     padding: 10,
-    borderRadius: 4,
+    borderRadius: 10,
     alignItems: "center",
     boxShadow: '1px 1px 2px gray'
   },
